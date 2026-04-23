@@ -15,7 +15,7 @@ def cliente():
 
 threads = []
 
-for i in range(20):  # 20 clientes simultâneos
+for i in range(20):  
     t = threading.Thread(target=cliente)
     threads.append(t)
     t.start()
