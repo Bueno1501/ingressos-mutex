@@ -1,10 +1,8 @@
 import socket
 import threading
 
-#  Variável global
 ingressos_disponiveis = 100
 
-# Mutex (Lock)
 lock = threading.Lock()
 
 def processar_cliente(conn, addr):
@@ -13,7 +11,6 @@ def processar_cliente(conn, addr):
     print(f"[NOVA CONEXÃO] {addr} conectado.")
 
     try:
-        # Recebe requisição do cliente
         data = conn.recv(1024).decode()
 
         if not data:
@@ -21,7 +18,6 @@ def processar_cliente(conn, addr):
 
         resposta = ""
 
-        # Seção crítica protegida por mutex
         with lock:
             if ingressos_disponiveis > 0:
                 ingressos_disponiveis -= 1
@@ -29,7 +25,6 @@ def processar_cliente(conn, addr):
             else:
                 resposta = "❌ Ingressos esgotados!"
 
-        # Envia resposta ao cliente
         conn.sendall(resposta.encode())
 
     except Exception as e:
@@ -52,7 +47,6 @@ def iniciar_servidor():
     while True:
         conn, addr = servidor.accept()
 
-        # 🧵 Cria uma nova thread para cada cliente
         thread = threading.Thread(target=processar_cliente, args=(conn, addr))
         thread.start()
 
